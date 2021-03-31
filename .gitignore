@@ -21,7 +21,7 @@
 *.pdb
 
 # Project files
-Bin/**
+build/**
 
 # Visual Studio files
 Obj/**
