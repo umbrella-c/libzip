@@ -1,0 +1,14 @@
+/home/pme/libzip/build/CMakeFiles/rebuild_cache.dir
+/home/pme/libzip/build/CMakeFiles/edit_cache.dir
+/home/pme/libzip/build/src/CMakeFiles/rebuild_cache.dir
+/home/pme/libzip/build/src/CMakeFiles/edit_cache.dir
+/home/pme/libzip/build/src/CMakeFiles/zip.dir
+/home/pme/libzip/build/src/extlibs/zlib/CMakeFiles/rebuild_cache.dir
+/home/pme/libzip/build/src/extlibs/zlib/CMakeFiles/edit_cache.dir
+/home/pme/libzip/build/src/extlibs/zlib/CMakeFiles/z.dir
+/home/pme/libzip/build/src/extlibs/lzma/CMakeFiles/rebuild_cache.dir
+/home/pme/libzip/build/src/extlibs/lzma/CMakeFiles/edit_cache.dir
+/home/pme/libzip/build/src/extlibs/lzma/CMakeFiles/lzma.dir
+/home/pme/libzip/build/src/extlibs/bzip2/CMakeFiles/rebuild_cache.dir
+/home/pme/libzip/build/src/extlibs/bzip2/CMakeFiles/edit_cache.dir
+/home/pme/libzip/build/src/extlibs/bzip2/CMakeFiles/bzip2.dir

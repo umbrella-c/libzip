@@ -1,0 +1,2 @@
+/bin/ar qc libzip.a  CMakeFiles/zip.dir/detail/EndOfCentralDirectoryBlock.cpp.o CMakeFiles/zip.dir/detail/ZipCentralDirectoryFileHeader.cpp.o CMakeFiles/zip.dir/detail/ZipGenericExtraField.cpp.o CMakeFiles/zip.dir/detail/ZipLocalFileHeader.cpp.o CMakeFiles/zip.dir/ZipFile.cpp.o CMakeFiles/zip.dir/ZipArchiveEntry.cpp.o CMakeFiles/zip.dir/ZipArchive.cpp.o
+/bin/ranlib libzip.a
