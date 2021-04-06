@@ -7,28 +7,56 @@
 #include <fstream>
 #include <cstdio>
 #include <cstring>
+#include <set>
 #include <dirent.h>
+
+const std::set<char> g_pathDelimiters { '\\', '/' };
 
 static void print_usage(const char* error_message)
 {
-    printf("pakbuild: %s\n", error_message);
-    printf("usage: pakbuild option [flags] path(s)\n");
+    printf("ziputil: %s\n", error_message);
+    printf("usage: ziputil option [flags] path(s)\n");
     printf("options\n");
-    printf("  pack     Build a new .pak file with the provided paths\n");
-    printf("  unpack   Extract a .pak file to the provided path\n");
-    printf("  list     Lists the contents and information about the .pak file\n");
+    printf("  zip     Build a new .pak file with the provided paths\n");
+    printf("  unzip   Extract a .pak file to the provided path\n");
+    printf("  list    Lists the contents and information about the .pak file\n");
     printf("flags\n");
-    printf("  -d       pack: the path(s) are directories\n");
-    printf("  -p <pwd> [un]pack: the password to lock/unlock the .pak file with\n");
+    printf("  -o       zip: the output file path for the zip file\n");
+    printf("  -d       zip: the path(s) are directories\n");
+    printf("  -p <pwd> [un]zip: the password to lock/unlock the .pak file with\n");
 }
 
-void add_file(ZipArchive::Ptr& zip, const std::string& file, const std::string& password)
+std::vector<std::string> SplitPath(const std::string& str, const std::set<char> delimiters)
 {
-    printf("adding file: %s\n", file.c_str());
+    std::vector<std::string> result;
 
-	std::ifstream fileStream(file, std::ios::binary);
-    ZipArchiveEntry::Ptr entry = zip->CreateEntry(file);
+    char const* pch = str.c_str();
+    char const* start = pch;
+    for(; *pch; ++pch) {
+        if (delimiters.find(*pch) != delimiters.end()) {
+            if (start != pch) {
+                std::string str(start, pch);
+                result.push_back(str);
+            }
+            else {
+                result.push_back("");
+            }
+            start = pch + 1;
+        }
+    }
+    result.push_back(start);
+    return result;
+}
+
+void add_file(ZipArchive::Ptr& zip, const std::string& file, const std::string& prefix, const std::string& password)
+{
+    auto pathTokens = SplitPath(file, g_pathDelimiters);
+    auto fileName   = pathTokens.back();
+    auto zipPath    = prefix + fileName;
+    auto entry      = zip->CreateEntry(zipPath);
     assert(entry != nullptr);
+    
+    printf("[+] %s\n", zipPath.c_str());
 
     if (password.size()) {
         entry->SetPassword(password);
@@ -41,11 +69,12 @@ void add_file(ZipArchive::Ptr& zip, const std::string& file, const std::string& 
     Bzip2Method::Ptr ctx = Bzip2Method::Create();
     ctx->SetBlockSize(Bzip2Method::BlockSize::B600);
 
+	std::ifstream fileStream(file, std::ios::binary);
     entry->SetCompressionStream(fileStream, ctx, 
         ZipArchiveEntry::CompressionMode::Immediate);
 }
 
-void add_directory(ZipArchive::Ptr& zip, const std::string& directory, const std::string& password)
+void add_directory(ZipArchive::Ptr& zip, const std::string& directory, const std::string& prefix, const std::string& password, bool recursive)
 {
     struct dirent *entry = nullptr;
     DIR *dp = nullptr;
@@ -53,8 +82,15 @@ void add_directory(ZipArchive::Ptr& zip, const std::string& directory, const std
     dp = opendir(directory.c_str());
     if (dp != nullptr) {
         while ((entry = readdir(dp))) {
-            std::string path(entry->d_name);
-            add_file(zip, path, password);
+            std::string fileName(entry->d_name);
+            std::string filePath = directory + "/" + fileName;
+            if (entry->d_type == DT_REG) {
+                add_file(zip, filePath, prefix, password);
+            }
+            else if (entry->d_type == DT_DIR && recursive) {
+                std::string updatedPrefix = prefix + "/" + fileName;
+                add_directory(zip, filePath, updatedPrefix, password, recursive);
+            }
         }
     }
 
@@ -85,11 +121,12 @@ int main(int argc, char** argv)
         return -1;
     }
 
-    if (!strcmp(argv[1], "pack")) {
+    if (!strcmp(argv[1], "zip")) {
         bool  isDirectory = false;
         bool  hasPassword = false;
         char* password    = nullptr;
         std::vector<std::string> paths;
+        std::string outfile = "default.zip";
 
         for (int i = 2; i < argc && argc >= requiredArgC; i++) {
             if (!strcmp(argv[i], "-d")) {
@@ -102,6 +139,11 @@ int main(int argc, char** argv)
                 password = argv[i + 1];
                 i++;
             }
+            else if (!strcmp(argv[i], "-o")) {
+                requiredArgC += 2;
+                outfile = argv[i + 1];
+                i++;
+            }
             else {
                 paths.push_back(std::string(argv[i]));
             }
@@ -112,27 +154,28 @@ int main(int argc, char** argv)
             return -1;
         }
         
-        ZipArchive::Ptr archive = ZipFile::Open("build.pak");
+        ZipArchive::Ptr archive = ZipFile::Open(outfile);
         std::string cppPass;
-        archive->SetComment("Built with pakbuild");
+        archive->SetComment("Built with ziputil");
 
         if (password) {
             cppPass += password;
         }
-
+        
+        std::string rootPrefix = "";
         for (const auto& path : paths) {
             if (isDirectory) {
-                add_directory(archive, path, cppPass);
+                add_directory(archive, path, rootPrefix, cppPass, false);
             }
             else {
-                add_file(archive, path, cppPass);
+                add_file(archive, path, rootPrefix, cppPass);
             }
         }
 
         // data from contentStream are pumped here
-        ZipFile::SaveAndClose(archive, "build.pak");
+        ZipFile::SaveAndClose(archive, outfile);
     }
-    else if (!strcmp(argv[1], "unpack")) {
+    else if (!strcmp(argv[1], "unzip")) {
         bool hasPassword = false;
         std::string cppPass;
 
@@ -149,7 +192,7 @@ int main(int argc, char** argv)
 
         ZipArchive::Ptr archive = ZipFile::Open(std::string(argv[requiredArgC - 1]));
         if (!archive) {
-            printf("pakbuild: invalid path %s\n", argv[requiredArgC - 1]);
+            printf("ziputil: invalid path %s\n", argv[requiredArgC - 1]);
             return -1;
         }
         
@@ -158,25 +201,25 @@ int main(int argc, char** argv)
         {
             auto entry = archive->GetEntry(int(i));
 
-            printf("unpacking: %s\n", entry->GetFullName().c_str());
             if (entry->IsPasswordProtected() && hasPassword) {
                 entry->SetPassword(cppPass);
             }
 
             auto dataStream = entry->GetDecompressionStream();
             if (dataStream) {
+                printf("[x] %s\n", entry->GetFullName().c_str());
                 std::ofstream dest(entry->GetFullName(), std::ios::binary);
                 stream_copy_n(*dataStream, entry->GetSize(), dest);
             }
             else {
-                printf("unpacking: skipped due to missing password\n");
+                printf("[-] %s [missing password]\n", entry->GetFullName().c_str());
             }
         }
     }
     else if (!strcmp(argv[1], "list")) {
         ZipArchive::Ptr archive = ZipFile::Open(std::string(argv[requiredArgC - 1]));
         if (!archive) {
-            printf("pakbuild: invalid path %s\n", argv[requiredArgC - 1]);
+            printf("ziputil: invalid path %s\n", argv[requiredArgC - 1]);
             return -1;
         }
 
