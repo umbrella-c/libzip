@@ -4,7 +4,8 @@
 #ifndef __7Z_THREADS_H
 #define __7Z_THREADS_H
 
-#include "ThreadsP.h"  //for not _WIN32
+#include "ThreadsP.h"  // for posix
+#include "ThreadsV.h"  // for c11
 
 #ifdef _WIN32
 #include <windows.h>

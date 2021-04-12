@@ -28,10 +28,7 @@ MY_CPU_LE_UNALIGN means that CPU is LITTLE ENDIAN and CPU supports unaligned mem
     #define MY_CPU_NAME "x64"
   #endif
   #define MY_CPU_64BIT
-#endif
-
-
-#if  defined(_M_IX86) \
+#elif defined(_M_IX86) \
   || defined(__i386__)
   #define MY_CPU_X86
   #define MY_CPU_NAME "x86"

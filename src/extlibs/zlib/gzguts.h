@@ -25,13 +25,16 @@
 #  include <stdlib.h>
 #  include <limits.h>
 #endif
-#include <fcntl.h>
 
-#ifdef _WIN32
+#ifndef MOLLENOS
+#include <fcntl.h>
+#endif
+
+#if defined(_WIN32) || defined(MOLLENOS)
 #  include <stddef.h>
 #endif
 
-#if defined(__TURBOC__) || defined(_MSC_VER) || defined(_WIN32)
+#if defined(__TURBOC__) || defined(_MSC_VER) || defined(_WIN32) || defined(MOLLENOS)
 #  include <io.h>
 #endif
 

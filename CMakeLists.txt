@@ -15,6 +15,7 @@ macro (check_and_add inc def)
 endmacro ()
 
 check_and_add (pthread.h PTHREAD_H)
+check_and_add (threads.h THREADS_H)
 
 add_subdirectory (src)
 add_subdirectory (utils)

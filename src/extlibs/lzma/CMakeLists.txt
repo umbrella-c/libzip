@@ -39,6 +39,7 @@ add_library(lzma
     Sort.c
     Threads.c
     ThreadsP.c
+    ThreadsV.c
     Xz.c
     XzCrc64.c
     XzCrc64Opt.c

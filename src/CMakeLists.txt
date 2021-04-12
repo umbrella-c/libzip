@@ -26,3 +26,14 @@ add_library (zip
     ZipArchive.cpp
 )
 add_dependencies (zip z bzip2 lzma)
+
+# Install library headers
+install(DIRECTORY compression detail methods streams utils DESTINATION include/libzip)
+install(FILES ZipArchive.h ZipArchiveEntry.h ZipFile.h DESTINATION include/libzip)
+
+# Add a new install target
+install(TARGETS zip
+    ARCHIVE DESTINATION lib
+    LIBRARY DESTINATION lib
+    RUNTIME DESTINATION bin
+)
