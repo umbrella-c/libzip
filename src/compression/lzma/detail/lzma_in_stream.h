@@ -1,5 +1,5 @@
 #pragma once
-#include "../../../extlibs/lzma/7zTypes.h"
+#include <lzma/7zTypes.h>
 
 #include <condition_variable>
 #include <mutex>

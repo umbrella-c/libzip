@@ -1,5 +1,6 @@
 
 
+include_directories(extlibs)
 if (NOT USE_SYSTEM_LIBZ)
     message (STATUS "Using the builtin libz library sources")
     add_subdirectory (extlibs/zlib)

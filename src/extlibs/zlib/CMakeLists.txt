@@ -12,3 +12,13 @@ add_library(z
     uncompr.c
     zutil.c
 )
+
+# Install library headers
+install(FILES zlib.h zconf.h DESTINATION include/zlib)
+
+# Add a new install target
+install(TARGETS z
+    ARCHIVE DESTINATION lib
+    LIBRARY DESTINATION lib
+    RUNTIME DESTINATION bin
+)

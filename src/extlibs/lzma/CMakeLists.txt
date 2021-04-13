@@ -47,3 +47,13 @@ add_library(lzma
     XzEnc.c
     XzIn.c
 )
+
+# Install library headers
+install(FILES 7z.h 7zTypes.h 7zVersion.h LzmaDec.h LzmaEnc.h DESTINATION include/lzma)
+
+# Add a new install target
+install(TARGETS lzma
+    ARCHIVE DESTINATION lib
+    LIBRARY DESTINATION lib
+    RUNTIME DESTINATION bin
+)

@@ -1,5 +1,6 @@
 
 if (BUILD_UTILS)
+    include_directories(../src/extlibs)
     add_executable (ziputil ziputil.cpp)
     target_link_libraries (ziputil zip z bzip2 lzma)
     if (UNIX)
