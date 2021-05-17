@@ -3,7 +3,7 @@
 //   2021-02-05 : by philipmeulengracht
 #include "ThreadsV.h"
 #include "Threads.h"
-#if defined(HAVE_THREADS_H)
+#if defined(HAVE_THREADS_H) && !defined(HAVE_PTHREAD_H)
 
 #include <threads.h>
 #include <assert.h>
