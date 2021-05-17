@@ -4,7 +4,7 @@
 
 #ifndef __7Z_THREADS_V_H
 #define __7Z_THREADS_V_H
-#if defined(HAVE_THREADS_H)
+#if defined(HAVE_THREADS_H) && !defined(HAVE_PTHREAD_H)
 #include "7zTypes.h"
 #include <string.h> //memcpy
 
