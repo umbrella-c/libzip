@@ -1,17 +1,22 @@
 
 
 include_directories(extlibs)
-if (NOT USE_SYSTEM_LIBZ)
+
+if (UNIX AND LIBZIP_COMPILE_AS_PIC)
+    add_definitions(-fPIC)
+endif ()
+
+if (NOT LIBZIP_USE_SYSTEM_LIBZ)
     message (STATUS "Using the builtin libz library sources")
     add_subdirectory (extlibs/zlib)
 endif ()
 
-if (NOT USE_SYSTEM_LZMA)
+if (NOT LIBZIP_USE_SYSTEM_LZMA)
     message (STATUS "Using the builtin lzma library sources")
     add_subdirectory (extlibs/lzma)
 endif ()
 
-if (NOT USE_SYSTEM_BZIP2)
+if (NOT LIBZIP_USE_SYSTEM_BZIP2)
     message (STATUS "Using the builtin bzip2 library sources")
     add_subdirectory (extlibs/bzip2)
 endif ()
