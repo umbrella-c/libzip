@@ -38,7 +38,7 @@ install(DIRECTORY compression detail methods streams utils DESTINATION include/l
 install(FILES ZipArchive.h ZipArchiveEntry.h ZipFile.h DESTINATION include/libzip)
 
 # Add a new install target
-install(TARGETS zip bzip2 lzma
+install(TARGETS zip bzip2 lzma z
     ARCHIVE DESTINATION lib
     LIBRARY DESTINATION lib
     RUNTIME DESTINATION bin
