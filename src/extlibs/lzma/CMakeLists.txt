@@ -1,3 +1,7 @@
+set(ADDITIONAL_SOURCES)
+if(BUILD_SHARED_LIBS AND MOLLENOS)
+    set(ADDITIONAL_SOURCES main.c)
+endif()
 
 add_library(lzma
     7zAlloc.c
@@ -46,6 +50,7 @@ add_library(lzma
     XzDec.c
     XzEnc.c
     XzIn.c
+    ${ADDITIONAL_SOURCES}
 )
 
 # Install library headers

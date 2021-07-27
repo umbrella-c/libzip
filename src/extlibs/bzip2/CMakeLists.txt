@@ -1,3 +1,7 @@
+set(ADDITIONAL_SOURCES)
+if(BUILD_SHARED_LIBS AND MOLLENOS)
+    set(ADDITIONAL_SOURCES main.c)
+endif()
 
 add_library(bzip2
     blocksort.c
@@ -8,6 +12,7 @@ add_library(bzip2
     decompress.c
     huffman.c
     randtable.c
+    ${ADDITIONAL_SOURCES}
 )
 
 # Install library headers

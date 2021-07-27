@@ -21,6 +21,11 @@ if (NOT LIBZIP_USE_SYSTEM_BZIP2)
     add_subdirectory (extlibs/bzip2)
 endif ()
 
+set(ADDITIONAL_SOURCES)
+if(BUILD_SHARED_LIBS AND MOLLENOS)
+    set(ADDITIONAL_SOURCES main.c)
+endif()
+
 add_library (zip 
     detail/EndOfCentralDirectoryBlock.cpp
     detail/ZipCentralDirectoryFileHeader.cpp
@@ -30,6 +35,7 @@ add_library (zip
     ZipFile.cpp
     ZipArchiveEntry.cpp
     ZipArchive.cpp
+    ${ADDITIONAL_SOURCES}
 )
 add_dependencies (zip z bzip2 lzma)
 
