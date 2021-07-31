@@ -38,7 +38,7 @@ add_library (zip
     ${ADDITIONAL_SOURCES}
 )
 if (BUILD_SHARED_LIBS)
-    link_libraries(zip z bzip2 lzma)
+    target_link_libraries(zip z bzip2 lzma)
 endif()
 add_dependencies (zip z bzip2 lzma)
 
