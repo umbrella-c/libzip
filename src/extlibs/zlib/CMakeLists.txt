@@ -2,6 +2,7 @@
 set(ADDITIONAL_SOURCES)
 if(BUILD_SHARED_LIBS AND MOLLENOS)
     set(ADDITIONAL_SOURCES main.c)
+    add_definitions(-DZLIB_DLL)
 endif()
 
 add_library(z
