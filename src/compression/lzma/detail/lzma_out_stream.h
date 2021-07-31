@@ -37,6 +37,7 @@ namespace detail
       const stream_t& get_stream() const { return *_stream; }
       stream_t& get_stream() { return *_stream; }
       void set_stream(stream_t& stream) { _stream = &stream; }
+      bool is_open() const { return _stream != nullptr; }
 
     private:
       stream_t* _stream;
