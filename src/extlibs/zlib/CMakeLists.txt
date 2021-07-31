@@ -1,11 +1,7 @@
 
 set(ADDITIONAL_SOURCES)
-if(BUILD_SHARED_LIBS AND MOLLENOS)
-    set(ADDITIONAL_SOURCES main.c)
-    add_definitions(-DZLIB_DLL)
-endif()
 
-add_library(z
+set(SHARED_SOURCES
     adler32.c
     compress.c
     crc32.c
@@ -17,7 +13,15 @@ add_library(z
     trees.c
     uncompr.c
     zutil.c
-    ${ADDITIONAL_SOURCES}
+)
+
+if(BUILD_SHARED_LIBS AND MOLLENOS)
+    set(ADDITIONAL_SOURCES main.c)
+    #add_definitions(-DZLIB_DLL)
+endif()
+
+add_library(z STATIC
+    ${SHARED_SOURCES}
 )
 
 # Install library headers

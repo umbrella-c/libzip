@@ -1,9 +1,6 @@
 set(ADDITIONAL_SOURCES)
-if(BUILD_SHARED_LIBS AND MOLLENOS)
-    set(ADDITIONAL_SOURCES main.c)
-endif()
 
-add_library(bzip2
+set(SHARED_SOURCES
     blocksort.c
     bzerror.c
     bzlib.c
@@ -12,7 +9,16 @@ add_library(bzip2
     decompress.c
     huffman.c
     randtable.c
-    ${ADDITIONAL_SOURCES}
+)
+
+if(BUILD_SHARED_LIBS AND MOLLENOS)
+    set(ADDITIONAL_SOURCES main.c)
+    #add_definitions(-DBZ_DLL)
+endif()
+
+add_definitions(-DBZ_INTERNAL)
+add_library(bzip2 STATIC
+    ${SHARED_SOURCES}
 )
 
 # Install library headers

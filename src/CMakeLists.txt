@@ -22,12 +22,8 @@ if (NOT LIBZIP_USE_SYSTEM_BZIP2)
 endif ()
 
 set(ADDITIONAL_SOURCES)
-if(BUILD_SHARED_LIBS AND MOLLENOS)
-    set(ADDITIONAL_SOURCES main.c)
-    add_definitions(-DZLIB_DLL)
-endif()
 
-add_library (zip 
+set(SHARED_SOURCES
     detail/EndOfCentralDirectoryBlock.cpp
     detail/ZipCentralDirectoryFileHeader.cpp
     detail/ZipGenericExtraField.cpp
@@ -36,11 +32,20 @@ add_library (zip
     ZipFile.cpp
     ZipArchiveEntry.cpp
     ZipArchive.cpp
-    ${ADDITIONAL_SOURCES}
 )
-if (BUILD_SHARED_LIBS)
-    target_link_libraries(zip z bzip2 lzma)
+
+if(BUILD_SHARED_LIBS AND MOLLENOS)
+    set(ADDITIONAL_SOURCES main.c)
+    #add_definitions(-DZLIB_DLL)
 endif()
+
+add_library (zip STATIC
+    ${SHARED_SOURCES}
+)
+
+#if (BUILD_SHARED_LIBS)
+#    target_link_libraries(zip z bzip2 lzma)
+#endif()
 add_dependencies (zip z bzip2 lzma)
 
 # Install library headers

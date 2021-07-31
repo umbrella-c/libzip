@@ -89,6 +89,17 @@ typedef
 #   define BZ_API(func) (WINAPI * func)
 #   define BZ_EXTERN
 #   endif
+#elif defined(MOLLENOS)
+#   define BZ_API(func) func
+#ifdef BZ_DLL
+#ifdef BZ_INTERNAL
+#   define BZ_EXTERN __declspec(dllexport)
+#else
+#   define BZ_EXTERN __declspec(dllimport)
+#endif
+#else
+#   define BZ_EXTERN extern
+#endif
 #else
 #   define BZ_API(func) func
 #   define BZ_EXTERN extern
