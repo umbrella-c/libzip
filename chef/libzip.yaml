@@ -33,7 +33,6 @@ recipes:
         - -G
         - '"Unix Makefiles"'
         - -DLIBZIP_COMPILE_AS_PIC=ON
-        - -DLIBZIP_BUILD_UTILS=OFF
         - -DCMAKE_TOOLCHAIN_FILE=${{ PROJECT_PATH }}/chef/Vali.cmake
       env:
         CROSS: ${{ TOOLCHAIN_PREFIX }}
@@ -42,6 +41,10 @@ recipes:
     - type: build
       depends: [generate]
       system: make
+      env:
+        CROSS: ${{ TOOLCHAIN_PREFIX }}
+        VALI_ARCH: ${{ CHEF_ARCHITECTURE }}
+        VALI_SDK_PATH: ${{ INGREDIENTS_PREFIX }}
 
 packs:
 - name: libzip
