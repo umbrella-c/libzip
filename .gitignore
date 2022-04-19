@@ -30,3 +30,6 @@ Obj/**
 *.suo
 *.sdf
 *.opensdf
+
+.fridge/
+.oven/
