@@ -82,28 +82,6 @@ void add_file(ZipArchive::Ptr& zip, const std::string& file, const std::string& 
 
 void add_directory(ZipArchive::Ptr& zip, const std::string& directory, const std::string& prefix, const std::string& password, bool recursive)
 {
-#ifdef MOLLENOS
-    struct DIR*   dir;
-    struct DIRENT entry;
-    int           status;
-
-    status = opendir(directory.c_str(), 0, &dir);
-    if (status) {
-        return;
-    }
-
-    while (!readdir(dir, &entry)) {
-        std::string fileName(entry.d_name);
-        std::string filePath = directory + "/" + fileName;
-        if ((entry.d_options & FILE_FLAG_DIRECTORY) && recursive) {
-            std::string updatedPrefix = prefix + "/" + fileName;
-            add_directory(zip, filePath, updatedPrefix, password, recursive);
-        }
-        else {
-            add_file(zip, filePath, prefix, password);
-        }
-    }
-#else
     struct dirent *entry = nullptr;
     DIR *dp = nullptr;
 
@@ -121,9 +99,7 @@ void add_directory(ZipArchive::Ptr& zip, const std::string& directory, const std
             }
         }
     }
-
     closedir(dp);
-#endif
 }
 
 void stream_copy_n(std::istream & in, std::size_t count, std::ostream & out)
